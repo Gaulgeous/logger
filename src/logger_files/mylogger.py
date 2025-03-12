@@ -2,6 +2,13 @@ import datetime as dt
 import json
 import logging
 from typing_extensions import override
+import logging.config
+import logging.handlers
+import pathlib
+import queue
+from logging.handlers import QueueHandler, QueueListener
+
+from typing import Tuple
 
 LOG_RECORD_BUILTIN_ATTRS = {
     "args",
@@ -86,3 +93,19 @@ class NonErrorFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
         return record.levelno <= logging.INFO
     
+def setup_logger() -> Tuple[logging.Logger, QueueListener]:
+    config_file = pathlib.Path("src/logger_files/logging_config.json")
+    with open(config_file) as f_in:
+        config = json.load(f_in)
+
+    logging.config.dictConfig(config)
+
+    que: queue.Queue = queue.Queue(-1)  # no limit on size
+    queue_handler = QueueHandler(que)
+    listener = QueueListener(que)
+    root = logging.getLogger(__name__)
+
+    root.addHandler(queue_handler)
+    listener.start()
+
+    return (root, listener)

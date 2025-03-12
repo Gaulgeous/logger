@@ -7,7 +7,7 @@
       "datefmt": "%Y-%m-%dT%H:%M:%S%z"
     },
     "json": {
-      "()": "mylogger.MyJSONFormatter",
+      "()": "logger_files.mylogger.MyJSONFormatter",
       "fmt_keys": {
         "level": "levelname",
         "message": "message",
@@ -22,11 +22,11 @@
   },
   "filters": {
     "warnings_and_below": {
-        "()" : "mylogger.filter_maker",
+        "()" : "logger_files.mylogger.filter_maker",
         "level": "WARNING"
     },
     "info_and_debug": {
-        "()" : "mylogger.filter_maker",
+        "()" : "logger_files.mylogger.filter_maker",
         "level": "INFO"
     }
   },
